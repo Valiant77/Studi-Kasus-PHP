@@ -10,4 +10,4 @@ Route::get('/', function () {
 
 Route::get('/produk', [ProdukController::class, 'index'])->name('produk');
 Route::get('/resto', [RestoController::class, 'index'])->name('resto');
-Route::post('/resto/{id}', [RestoController::class, 'change'])->name('change');
+Route::post('/resto/{id}/change', [RestoController::class, 'change'])->name('change');
