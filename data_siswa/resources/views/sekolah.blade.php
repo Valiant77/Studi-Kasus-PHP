@@ -39,25 +39,20 @@
                 @if ($editing) @method('PUT') @endif
 
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label">Nama Sekolah</label>
                         <input type="text" name="nama" class="form-control"
                             value="{{ old('nama', $editing?->nama) }}" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <label class="form-label">Alamat</label>
                         <input type="text" name="alamat" class="form-control"
                             value="{{ old('alamat', $editing?->alamat) }}" required>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-1">
                         <label class="form-label">Kuota</label>
                         <input type="number" name="kuota" class="form-control" min="0"
                             value="{{ old('kuota', $editing?->kuota) }}" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Terisi</label>
-                        <input type="number" name="terisi" class="form-control" min="0"
-                            value="{{ old('terisi', $editing?->terisi ?? 0) }}" required>
                     </div>
                 </div>
 

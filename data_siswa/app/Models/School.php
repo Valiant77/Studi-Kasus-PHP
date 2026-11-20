@@ -14,4 +14,8 @@ class School extends Model
     {
         return $this->hasMany(Student::class, 'sekolah_id');
     }
+    public function syncTerisi(): void
+    {
+        $this->update(['terisi' => $this->students()->count()]);
+    }
 }

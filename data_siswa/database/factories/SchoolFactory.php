@@ -22,7 +22,7 @@ class SchoolFactory extends Factory
             'nama' => 'SMK ' . fake()->company(),
             'alamat' => fake()->address(),
             'kuota' => $kuota,
-            'terisi' => fake()->numberBetween(0, $kuota - 67)
+            'terisi' => 0
         ];
     }
 }

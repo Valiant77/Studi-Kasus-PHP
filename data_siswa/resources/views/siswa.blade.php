@@ -42,33 +42,40 @@
                     <div class="col-md-3">
                         <label class="form-label">NIS</label>
                         <input type="text" name="nis" class="form-control"
+                            inputmode="numeric" pattern="[0-9]+" maxlength="8" minlength="8"
+                            oninput="this.value = this.value.replace(/\D/g, '')"
                             value="{{ old('nis', $editing?->nis) }}" required>
                     </div>
                     <div class="col-md-5">
                         <label class="form-label">Nama</label>
                         <input type="text" name="nama" class="form-control"
+                            pattern="[\p{L}\s.'\-]+" maxlength="255"
+                            oninput="this.value = this.value.replace(/[^\p{L}\s.'\-]/gu, '')"
                             value="{{ old('nama', $editing?->nama) }}" required>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Kelas</label>
                         <select name="kelas" class="form-select" required>
-                            @foreach (['X', 'XI', 'XII'] as $k)
+                            @foreach (App\Models\Student::KELAS as $k)
                                 <option value="{{ $k }}" @selected(old('kelas', $editing?->kelas) === $k)>{{ $k }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Jurusan</label>
-                        <input type="text" name="jurusan" class="form-control"
-                            value="{{ old('jurusan', $editing?->jurusan) }}" required>
+                        <select name="jurusan" class="form-select" required>
+                            @foreach (App\Models\Student::JURUSAN as $j)
+                                <option value="{{ $j }}" @selected(old('jurusan', $editing?->jurusan) === $j)>{{ $j }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-md-5">
                         <label class="form-label">Sekolah</label>
-                        <select name="school_id" class="form-select" required>
+                        <select name="sekolah_id" class="form-select" required>
                             <option value="">-- Pilih Sekolah --</option>
                             @foreach ($schools as $school)
                                 <option value="{{ $school->id }}"
-                                    @selected(old('school_id', $editing?->school_id) == $school->id)>
+                                    @selected(old('school_id', $editing?->sekolah_id) == $school->id)>
                                     {{ $school->nama }}
                                 </option>
                             @endforeach

@@ -23,7 +23,7 @@ class SchoolController extends Controller
 
     public function update(Request $request, School $school)
     {
-        $school->update($this->validated($request));
+        $school->update($this->validated($request, $school));
         return redirect()->route('sekolah')->with('success', 'Sekolah diperbarui.');
     }
 
@@ -39,7 +39,6 @@ class SchoolController extends Controller
             'nama'   => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'kuota'  => 'required|integer|min:0',
-            'terisi' => 'required|integer|min:0|lte:kuota',
         ]);
     }
 }

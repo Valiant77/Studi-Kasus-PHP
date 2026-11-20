@@ -42,11 +42,15 @@ class StudentController extends Controller
     private function validated(Request $request, ?Student $student = null): array
     {
         return $request->validate([
-            'nis'           => ['required', 'string', 'max:20', Rule::unique('students', 'nis')->ignore($student)],
-            'nama'          => 'required|string|max:255',
-            'kelas'         => 'required|string|max:10',
-            'jurusan'       => 'required|string|max:100',
-            'school_id'     => 'required|exists:schools,id',
+            'nis' => ['required', 'regex:/^[0-9]+$/', 'max:20', Rule::unique('students', 'nis')->ignore($student)],
+            'nama' => ['required', 'regex:/^[\pL\s.\'-]+$/u', 'max:255'],
+            'kelas' => ['required', Rule::in(Student::KELAS)],
+            'jurusan' => ['required', Rule::in(Student::JURUSAN)],
+            'sekolah_id' => ['required', 'exists:schools,id', function ($attr, $value, $fail) use ($student) { //this convolution because the stupid shit fill
+                $school = School::find($value);
+                $sameSchool = $student && $student->school_id == $value;
+                if ($school && ! $sameSchool && $school->terisi >= $school->kuota) { $fail('Kuota sekolah ini sudah penuh.'); }
+            }],
             'tgl_masuk'     => 'required|date',
             'jenis_kelamin' => ['required', Rule::in(['laki-laki', 'perempuan'])],
         ]);

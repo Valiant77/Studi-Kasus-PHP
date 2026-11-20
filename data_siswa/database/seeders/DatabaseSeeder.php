@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $sekolah = School::factory(7)->create();
+        // $sekolah = School::factory(7)->create();
         
-        Student::factory(75)->state(fn () => ['sekolah_id' => $sekolah->random()->id])->create();
+        // Student::factory(75)->state(fn () => ['sekolah_id' => $sekolah->random()->id])->create();
     }
 }

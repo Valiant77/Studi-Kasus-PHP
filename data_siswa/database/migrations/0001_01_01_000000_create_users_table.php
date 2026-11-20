@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('alamat');
             $table->integer('kuota');
-            $table->integer('terisi');
+            $table->integer('terisi')->default(0);
             $table->timestamps();
         });
 
