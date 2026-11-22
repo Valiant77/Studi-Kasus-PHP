@@ -14,8 +14,6 @@ class Student extends Model
         return $this->belongsTo(School::class, 'sekolah_id');
     }
 
-    public const KELAS = ['X', 'XI', 'XII'];
-    public const JURUSAN = ['RPL', 'TKJ', 'TO', 'TM', 'TL', 'DKV', 'KL', 'AKL', 'MPLB', 'PS'];
     protected static function booted(): void //foid?????!!!!
     {
         static::created(fn ($s) => School::find($s->sekolah_id)?->syncTerisi());

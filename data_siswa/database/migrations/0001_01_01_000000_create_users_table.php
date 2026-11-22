@@ -23,7 +23,10 @@ return new class extends Migration
 
         Schema::create('schools', function(Blueprint $table) {
             $table->id();
+            $table->string('npsn')->unique();
             $table->string('nama');
+            $table->string('kelas');
+            $table->json('jurusan');
             $table->string('alamat');
             $table->integer('kuota');
             $table->integer('terisi')->default(0);

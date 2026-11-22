@@ -41,18 +41,27 @@ class StudentController extends Controller
 
     private function validated(Request $request, ?Student $student = null): array
     {
+        $school = School::find($request->school_id);
+
         return $request->validate([
-            'nis' => ['required', 'regex:/^[0-9]+$/', 'max:20', Rule::unique('students', 'nis')->ignore($student)],
-            'nama' => ['required', 'regex:/^[\pL\s.\'-]+$/u', 'max:255'],
-            'kelas' => ['required', Rule::in(Student::KELAS)],
-            'jurusan' => ['required', Rule::in(Student::JURUSAN)],
-            'sekolah_id' => ['required', 'exists:schools,id', function ($attr, $value, $fail) use ($student) { //this convolution because the stupid shit fill
-                $school = School::find($value);
+            'nis'     => ['required', 'regex:/^[0-9]+$/', 'max:20', Rule::unique('students', 'nis')->ignore($student)],
+            'nama'    => ['required', 'regex:/^[\pL\s.\'-]+$/u', 'max:255'],
+            'kelas'   => ['required', Rule::in($school?->kelasList() ?? [])],
+            'jurusan' => ['required', Rule::in($school?->jurusan ?? [])],
+            'school_id' => ['required', 'exists:schools,id', function ($attr, $value, $fail) use ($student, $school) {
                 $sameSchool = $student && $student->school_id == $value;
-                if ($school && ! $sameSchool && $school->terisi >= $school->kuota) { $fail('Kuota sekolah ini sudah penuh.'); }
+
+                if ($school && ! $sameSchool && $school->terisi >= $school->kuota) {
+                    $fail('Kuota sekolah ini sudah penuh.');
+                }
             }],
             'tgl_masuk'     => 'required|date',
             'jenis_kelamin' => ['required', Rule::in(['laki-laki', 'perempuan'])],
+        ], [
+            'nis.regex'  => 'NIS hanya boleh berisi angka.',
+            'nama.regex' => 'Nama tidak boleh mengandung angka atau simbol.',
+            'kelas.in'   => 'Kelas tidak tersedia di sekolah ini.',
+            'jurusan.in' => 'Jurusan tidak tersedia di sekolah ini.',
         ]);
     }
 }

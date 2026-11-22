@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\School;
+use Illuminate\Validation\Rule;
 
 class SchoolController extends Controller
 {
@@ -33,12 +34,26 @@ class SchoolController extends Controller
         return redirect()->route('sekolah')->with('success', 'Sekolah dihapus.');
     }
 
-    private function validated(Request $request): array
+    private function validated(Request $request, ?School $school = null): array
     {
-        return $request->validate([
-            'nama'   => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'kuota'  => 'required|integer|min:0',
+        $data = $request->validate([
+            'npsn'    => ['required', 'regex:/^[0-9]{8}$/', Rule::unique('schools', 'npsn')->ignore($school)],
+            'nama'    => 'required|string|max:255',
+            'alamat'  => 'required|string|max:255',
+            'kuota'   => ['required', 'integer', 'min:' . ($school?->terisi ?? 0)],
+            'kelas'   => ['required', Rule::in(array_keys(School::KELAS))],
+            'jurusan' => 'required|string|max:500',
+        ], [
+            'npsn.regex' => 'NPSN harus 8 digit angka.',
         ]);
+
+        $data['jurusan'] = collect(explode(',', $data['jurusan']))
+            ->map(fn ($j) => trim($j))
+            ->filter()
+            ->unique(fn ($j) => strtolower($j))
+            ->values()
+            ->all();
+
+        return $data;
     }
 }

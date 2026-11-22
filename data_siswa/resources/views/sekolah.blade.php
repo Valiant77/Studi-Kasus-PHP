@@ -39,15 +39,35 @@
                 @if ($editing) @method('PUT') @endif
 
                 <div class="row g-3">
+                    <div class="col-md-2">
+                        <label class="form-label">NPSN</label>
+                        <input type="text" name="npsn" class="form-control"
+                            inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
+                            oninput="this.value = this.value.replace(/\D/g, '')"
+                            value="{{ old('npsn', $editing?->npsn) }}" required>
+                    </div>
                     <div class="col-md-3">
                         <label class="form-label">Nama Sekolah</label>
                         <input type="text" name="nama" class="form-control"
                             value="{{ old('nama', $editing?->nama) }}" required>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-7">
                         <label class="form-label">Alamat</label>
                         <input type="text" name="alamat" class="form-control"
                             value="{{ old('alamat', $editing?->alamat) }}" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Kelas</label>
+                        <select name="kelas" class="form-select" required>
+                            @foreach (array_keys(App\Models\School::KELAS) as $k)
+                                <option value="{{ $k }}" @selected(old('kelas', $editing?->kelas) === $k)>{{ $k }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-9">
+                        <label class="form-label">Jurusan <small class="text-muted">(pisahkan dengan koma)</small></label>
+                        <input type="text" name="jurusan" class="form-control" placeholder="RPL, TKJ, Multimedia"
+                            value="{{ old('jurusan', $editing ? implode(', ', $editing->jurusan) : '') }}" required>
                     </div>
                     <div class="col-md-1">
                         <label class="form-label">Kuota</label>
@@ -73,8 +93,11 @@
             <thead class="table-primary">
                 <tr>
                     <th>#</th>
+                    <th>NPSN</th>
                     <th>Nama Sekolah</th>
                     <th>Alamat Sekolah</th>
+                    <th>Kelas</th>
+                    <th>Jurusan</th>
                     <th>Kuota</th>
                     <th>Terisi</th>
                     <th>Sisa</th>
@@ -85,8 +108,11 @@
                 @foreach ($schools as $sc)
                 <tr>
                     <td>{{ $schools->firstItem() + $loop->index }}</td>
+                    <td>{{ $sc->npsn }}</td>
                     <td>{{ $sc->nama }}</td>
                     <td>{{ $sc->alamat }}</td>
+                    <td>{{ $sc->kelas }}</td>
+                    <td>@foreach ($sc->jurusan as $j)<span class="badge text-bg-primary mx-1">{{ $j }}</span>@endforeach</td>
                     <td>{{ $sc->kuota }}</td>
                     <td>{{ $sc->terisi }}</td>
                     <td>{{ $sc->kuota - $sc->terisi }}</td>
